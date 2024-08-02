@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TripPricer.Helpers;
+﻿using TripPricer.Helpers;
 
 namespace TripPricer;
 
@@ -16,8 +11,10 @@ public class TripPricer
 
         // Sleep to simulate some latency
         Thread.Sleep(ThreadLocalRandom.Current.Next(1, 50));
-
-        for (int i = 0; i < 5; i++)
+        // FIX01 GetTripDeals unit test ==> validation
+        // We extend the For loop high limit to 10 (5 previously).
+        // It allows to load all suppliers (10, see GetProviderName).          
+        for (int i = 0; i < 10; i++)
         {
             int multiple = ThreadLocalRandom.Current.Next(100, 700);
             double childrenDiscount = children / 3.0;
@@ -42,7 +39,10 @@ public class TripPricer
 
     public string GetProviderName(string apiKey, int adults)
     {
-        int multiple = ThreadLocalRandom.Current.Next(1, 10);
+        // FIX02 for GetTripDeals unit test validation ==>
+        // Next is exclusive, it returns minvalue to maxvalue-1.
+        // So 10 is never returned. We set the maxvalue to 11. 
+        int multiple = ThreadLocalRandom.Current.Next(1, 11);
 
         return multiple switch
         {
@@ -55,7 +55,7 @@ public class TripPricer
             7 => "Live Free",
             8 => "Dancing Waves Cruselines and Partners",
             9 => "AdventureCo",
-            _ => "Cure-Your-Blues",
+            _ => "Cure-Your-Blues", // "_" is equivalent to default.
         };        
     }
 }
