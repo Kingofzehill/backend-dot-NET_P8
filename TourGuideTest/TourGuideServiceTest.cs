@@ -85,7 +85,9 @@ namespace TourGuideTest
             Assert.Equal(user.UserId, visitedLocation.UserId);
         }
 
-        [Fact(Skip = "Not yet implemented")]
+        // FIX03 set GetNearbyAttractions test to be played:
+        // [Fact(Skip = "Not yet implemented")] ==> [Fact].
+        [Fact]
         public void GetNearbyAttractions()
         {
             _fixture.Initialize(0);
@@ -99,6 +101,7 @@ namespace TourGuideTest
             Assert.Equal(5, attractions.Count);
         }
 
+        // See FIX01 & FIX02 for code fixes done for validating GetTripDeals unit test.
         [Fact]
         public void GetTripDeals()
         {

@@ -40,8 +40,8 @@ public class TripPricer
     public string GetProviderName(string apiKey, int adults)
     {
         // FIX02 for GetTripDeals unit test validation ==>
-        // Next is exclusive, it returns minvalue to maxvalue-1.
-        // So 10 is never returned. We set the maxvalue to 11. 
+        // Next is exclusive, it returns minvalue to maxvalue-1,
+        // so 10 is never returned. We set the maxvalue to 11. 
         int multiple = ThreadLocalRandom.Current.Next(1, 11);
 
         return multiple switch
@@ -55,7 +55,7 @@ public class TripPricer
             7 => "Live Free",
             8 => "Dancing Waves Cruselines and Partners",
             9 => "AdventureCo",
-            _ => "Cure-Your-Blues", // "_" is equivalent to default.
+            _ => "Cure-Your-Blues", // Note. "_" is equivalent to default.
         };        
     }
 }

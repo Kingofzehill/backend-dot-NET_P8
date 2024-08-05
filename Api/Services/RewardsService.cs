@@ -8,9 +8,13 @@ namespace TourGuide.Services;
 public class RewardsService : IRewardsService
 {
     private const double StatuteMilesPerNauticalMile = 1.15077945;
-    private readonly int _defaultProximityBuffer = 10;
+    // FIX3.1 temporarily raise _defaultProximityBuffer from 10 to 1000 
+    // for increasing the detection of proximity attractions.
+    private readonly int _defaultProximityBuffer = 1000;
     private int _proximityBuffer;
-    private readonly int _attractionProximityRange = 200;
+    // FIX3.2 temporarily raise _attractionProximityRange from 200 to 20000 
+    // for increasing the detection of proximity attractions
+    private readonly int _attractionProximityRange = 20000;
     private readonly IGpsUtil _gpsUtil;
     private readonly IRewardCentral _rewardsCentral;
     private static int count = 0;
@@ -32,6 +36,7 @@ public class RewardsService : IRewardsService
         _proximityBuffer = _defaultProximityBuffer;
     }
 
+    // TD01 implement new functinality for calculating rewards.
     public void CalculateRewards(User user)
     {
         count++;
