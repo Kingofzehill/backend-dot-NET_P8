@@ -10,5 +10,9 @@ namespace TourGuide.Services.Interfaces
         bool IsWithinAttractionProximity(Attraction attraction, Locations location);
         void SetDefaultProximityBuffer();
         void SetProximityBuffer(int proximityBuffer);
+        // FIX 3.4 allows to change default ProximityRange value (200)
+        void SetDefaultAttractionProximityRange();
+        // FIX 3.4 allows to change default ProximityRange value (200).
+        void SetAttractionProximityRange(int attractionProximityRange);
     }
 }

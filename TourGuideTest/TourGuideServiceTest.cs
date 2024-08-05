@@ -91,6 +91,13 @@ namespace TourGuideTest
         public void GetNearbyAttractions()
         {
             _fixture.Initialize(0);
+            // FIX03.1 & 3.2 set ProxmityBuffer from 10 to int.MaxValue.
+            // It increases the detection of proximity attractions.
+            _fixture.RewardsService.SetProximityBuffer(int.MaxValue);
+            // FIX03.6 set ProxmityRange from 200 to int.MaxValue.
+            // It increases the detection of proximity attractions.
+            _fixture.RewardsService.SetAttractionProximityRange(int.MaxValue);
+
             var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
             var visitedLocation = _fixture.TourGuideService.TrackUserLocation(user);
 

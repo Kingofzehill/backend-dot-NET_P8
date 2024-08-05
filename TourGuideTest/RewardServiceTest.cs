@@ -38,7 +38,9 @@ public class RewardServiceTest : IClassFixture<DependencyFixture>
         Assert.True(_fixture.RewardsService.IsWithinAttractionProximity(attraction, attraction));
     }
 
-    [Fact(Skip = ("Needs fixed - can throw InvalidOperationException"))]
+    // FIX04 set NearAllAttractions test to be played:
+    // [Fact(Skip = "Needs fixed - can throw InvalidOperationException")] ==> [Fact].
+    [Fact]
     public void NearAllAttractions()
     {
         _fixture.Initialize(1);
@@ -48,7 +50,6 @@ public class RewardServiceTest : IClassFixture<DependencyFixture>
         _fixture.RewardsService.CalculateRewards(user);
         var userRewards = _fixture.TourGuideService.GetUserRewards(user);
         _fixture.TourGuideService.Tracker.StopTracking();
-
         Assert.Equal(_fixture.GpsUtil.GetAttractions().Count, userRewards.Count);
     }
 
