@@ -44,11 +44,13 @@ namespace TourGuideTest
             _output = output;
         }
 
-        [Fact(Skip = ("Delete Skip when you want to pass the test"))]
+        // FIX06 set HighVolumeGetRewards test to be played:
+        // [Fact(Skip = "Delete Skip when you want to pass the test")] ==> [Fact].
+        [Fact]
         public void HighVolumeTrackLocation()
         {
             //On peut ici augmenter le nombre d'utilisateurs pour tester les performances
-            _fixture.Initialize(1000);
+            _fixture.Initialize(10);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
@@ -72,7 +74,7 @@ namespace TourGuideTest
         public void HighVolumeGetRewards()
         {
             //On peut ici augmenter le nombre d'utilisateurs pour tester les performances
-            _fixture.Initialize(10);
+            _fixture.Initialize(1000);
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
