@@ -66,8 +66,9 @@ namespace TourGuideTest
 
             Assert.True(TimeSpan.FromMinutes(15).TotalSeconds >= stopWatch.Elapsed.TotalSeconds);
         }
-
-        [Fact(Skip = ("Delete Skip when you want to pass the test"))]
+        // FIX05 set HighVolumeGetRewards test to be played:
+        // [Fact(Skip = "Delete Skip when you want to pass the test")] ==> [Fact].
+        [Fact]
         public void HighVolumeGetRewards()
         {
             //On peut ici augmenter le nombre d'utilisateurs pour tester les performances
