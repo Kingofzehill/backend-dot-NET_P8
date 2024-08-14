@@ -49,7 +49,7 @@ namespace TourGuideTest
         [Fact]
         public void HighVolumeTrackLocation()
         {
-            //On peut ici augmenter le nombre d'utilisateurs pour tester les performances
+            //We can rise test users number for testing application performances.
             _fixture.Initialize(10);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
@@ -73,7 +73,7 @@ namespace TourGuideTest
         [Fact]
         public void HighVolumeGetRewards()
         {
-            //On peut ici augmenter le nombre d'utilisateurs pour tester les performances
+            //We can rise test users number for testing application performances.
             _fixture.Initialize(10);
 
             Stopwatch stopWatch = new Stopwatch();

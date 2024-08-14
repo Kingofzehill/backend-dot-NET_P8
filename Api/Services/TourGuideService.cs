@@ -112,54 +112,22 @@ public class TourGuideService : ITourGuideService
             // (FNCT01.01) check distance of attraction from user localization 
             distanceFromAttractionInList = _rewardsService.GetDistance(attractions[i], visitedLocation.Location);
             // (FNCT01.02) add attractions to nearbyAttractions list.          
-            if (nearbyAttractions.Count == 5)
-            {
-                // If there are already 5 attractions in nearbyAttractions list,
-                // update the list if attraction distance is closer to user location than 
-                // already listed attractions.                
-                for (int j = nearbyAttractions.Count -1; j >= 0; j--)
-                {
-                    if (distanceFromAttractionInList < nearbyAttractions[j].Distance)
-                    {
-                        nearbyAttractions.Remove(nearbyAttractions[j]);
-                        attractionReward = AttractionReward(user, attractions[i]);
-                        var nearbyAttraction = new NearbyAttraction(attractionReward, distanceFromAttractionInList, visitedLocation.Location.Longitude,
-                            visitedLocation.Location.Latitude, attractions[i].AttractionName, attractions[i].City,
-                            attractions[i].State, attractions[i].Latitude, attractions[i].Longitude);
-                        nearbyAttractions.Add(nearbyAttraction);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                attractionReward = AttractionReward(user, attractions[i]);
-                var nearbyAttraction = new NearbyAttraction(attractionReward, distanceFromAttractionInList, visitedLocation.Location.Longitude,
-                    visitedLocation.Location.Latitude, attractions[i].AttractionName, attractions[i].City,
-                    attractions[i].State, attractions[i].Latitude, attractions[i].Longitude);
-                nearbyAttractions.Add(nearbyAttraction);                            
-            }
-            // Sort nearbyAttractions list with distance descending order.
-            nearbyAttractions.Sort((x, y) => x.Distance.CompareTo(y.Distance));
+            attractionReward = AttractionReward(user, attractions[i]);
+            var nearbyAttraction = new NearbyAttraction(attractionReward, distanceFromAttractionInList, visitedLocation.Location.Longitude,
+                visitedLocation.Location.Latitude, attractions[i].AttractionName, attractions[i].City,
+                attractions[i].State, attractions[i].Latitude, attractions[i].Longitude);
+            nearbyAttractions.Add(nearbyAttraction);                                                                          
         }
 
-        /*  Old code before FNCT01 updates.
-                public List<Attraction> GetNearByAttractions(VisitedLocation visitedLocation)
-                {
-                    List<Attraction> nearbyAttractions = new ();
-                    foreach (var attraction in _gpsUtil.GetAttractions())
-                    {
-                        if (_rewardsService.IsWithinAttractionProximity(attraction, visitedLocation.Location))
-                        {
-                            nearbyAttractions.Add(attraction);
-                        }
-                    }
-                }
-        */
+        // Sort nearbyAttractions items list by distance descending order.
+        nearbyAttractions.Sort((x, y) => x.Distance.CompareTo(y.Distance));
+        // Keep the first 5 items.
+        List<NearbyAttraction> firstFiveNearbyAttractions = new(nearbyAttractions.Take(5));
 
         // (FNCT01.09) returns to default ProximityBuffer value.
         _rewardsService.SetProximityBuffer(10);
-        return nearbyAttractions;
+        
+        return firstFiveNearbyAttractions;
     }
 
     // (FNCT 01.10) returns RewardPoints of an Attraction.
