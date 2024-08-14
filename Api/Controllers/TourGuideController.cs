@@ -24,7 +24,7 @@ public class TourGuideController : ControllerBase
         return Ok(location);
     }
 
-    // TODO: Change this method to no longer return a List of Attractions.
+    // (FNCT01) TODO: Change this method to no longer return a List of Attractions.
     // Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
     // Return a new JSON object that contains:
     // Name of Tourist attraction, 
@@ -37,7 +37,8 @@ public class TourGuideController : ControllerBase
     public ActionResult<List<Attraction>> GetNearbyAttractions([FromQuery] string userName)
     {
         var visitedLocation = _tourGuideService.GetUserLocation(GetUser(userName));
-        var attractions = _tourGuideService.GetNearByAttractions(visitedLocation);
+        // (FNCT01.08) populate GetNearByAttractions updates: add user in entry parameter.        
+        var attractions = _tourGuideService.GetNearByAttractions(GetUser(userName), visitedLocation);
         return Ok(attractions);
     }
 

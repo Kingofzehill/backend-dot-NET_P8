@@ -52,7 +52,7 @@ public class RewardsService : IRewardsService
         _proximityRange = _defaultAttractionProximityRange;
     }
 
-    // TD01 implement new functinality for calculating rewards.
+   
     public void CalculateRewards(User user)
     {
         //count++;
@@ -60,32 +60,36 @@ public class RewardsService : IRewardsService
         List<Attraction> attractions = _gpsUtil.GetAttractions();
 
         // FIX04.1 Fix for preventing InvalidOperationException error :
-        // replace for each loop by for loop and makes subsequent code updates.
-        // See : https://makolyte.com/system-invalidoperationexception-collection-was-modified-enumeration-operation-may-not-execute/#Scenario_2_-_One_thread_is_modifying_the_collection_while_another_thread_is_looping_over_it
-        // OLD : foreach (var visitedLocation in userLocations)
+        // replace For Each loop by For loop.
+        //   See : https://makolyte.com/system-invalidoperationexception-collection-was-modified-enumeration-operation-may-not-execute/#Scenario_2_-_One_thread_is_modifying_the_collection_while_another_thread_is_looping_over_it
+        //   OLD : foreach (var visitedLocation in userLocations)
         for (int i = 0; i < userLocations.Count; i++)
         {
             // OLD : foreach (var attraction in attractions)
             for (int j = 0; j < attractions.Count; j++)
             {
-                /* Before FIX04.1
-                if (!user.UserRewards.Any(r => r.Attraction.AttractionName == attraction.AttractionName))
+                // FNCT01.03 add check if the attraction is not already listed in UserRewards attraction list.
+                if (NearAttraction(userLocations[i], attractions[j]) && AttractionHasNoUserReward(user, attractions[j]))
                 {
-                    if (NearAttraction(visitedLocation, attraction))
-                    {
-                        user.AddUserReward(new UserReward(visitedLocation, attraction, GetRewardPoints(attraction, user)));
-                    }
-                }
-                */
-                if (!user.UserRewards.Any(r => r.Attraction.AttractionName == attractions[j].AttractionName))
-                {
-                    if (NearAttraction(userLocations[i], attractions[j]))
-                    {
-                        user.AddUserReward(new UserReward(userLocations[i], attractions[j], GetRewardPoints(attractions[j], user)));
-                    }
+                    user.AddUserReward(new UserReward(userLocations[i], attractions[j], GetRewardPoints(attractions[j], user)));
                 }
             }
         }
+
+    }
+
+    // FIX07.01 checks if the attraction is not 
+    // already listed in User attractions rewards.
+    private static bool AttractionHasNoUserReward(User user, Attraction attraction)
+    {
+        for (int k = 0; k < user.UserRewards.Count; k++)
+        {
+            if (user.UserRewards[k].Attraction.AttractionName == attraction.AttractionName)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     // FIX03.5  update IsWithinAttractionProximity method for checking distance compared
