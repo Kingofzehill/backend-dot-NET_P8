@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TourGuide.Services;
+using TourGuide.Services.Interfaces;
 using TourGuide.Users;
 using TourGuide.Utilities;
 using TripPricer;
@@ -91,17 +92,19 @@ namespace TourGuideTest
         public void GetNearbyAttractions()
         {
             _fixture.Initialize(0);
-            // FIX03.1 & 3.2 set ProxmityBuffer from 10 to int.MaxValue.
+            // (FIX03.1 & 3.2) set ProxmityBuffer from 10 to int.MaxValue.
+            // It is required for avoiding the proximityBuffer (10 miles)
+            // to prevent CalculateRewards method to add Reward for each Nearby Attraction
+            //      _fixture.RewardsService.SetProximityBuffer(int.MaxValue);
+            // (FIX03.6) set ProxmityRange from 200 to int.MaxValue.
             // It increases the detection of proximity attractions.
-            _fixture.RewardsService.SetProximityBuffer(int.MaxValue);
-            // FIX03.6 set ProxmityRange from 200 to int.MaxValue.
-            // It increases the detection of proximity attractions.
-            _fixture.RewardsService.SetAttractionProximityRange(int.MaxValue);
+            //      _fixture.RewardsService.SetAttractionProximityRange(int.MaxValue);
 
             var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
             var visitedLocation = _fixture.TourGuideService.TrackUserLocation(user);
 
-            List<Attraction> attractions = _fixture.TourGuideService.GetNearByAttractions(visitedLocation);
+            // (FNCT01.04) populate FNCT01 updates: List<NearbyAttraction> replaces List<Attraction>. 
+            List<NearbyAttraction> attractions = _fixture.TourGuideService.GetNearByAttractions(user, visitedLocation);
 
             _fixture.TourGuideService.Tracker.StopTracking();
 
