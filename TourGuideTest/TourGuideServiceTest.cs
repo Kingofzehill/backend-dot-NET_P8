@@ -107,7 +107,7 @@ namespace TourGuideTest
             var visitedLocation = await _fixture.TourGuideService.TrackUserLocation(user);
 
             // (FNCT01.04) populate FNCT01 updates: List<NearbyAttraction> replaces List<Attraction>. 
-            List<NearbyAttraction> attractions = _fixture.TourGuideService.GetNearByAttractions(user, visitedLocation);
+            List<NearbyAttraction> attractions = await _fixture.TourGuideService.GetNearByAttractions(user, visitedLocation);
 
             _fixture.TourGuideService.Tracker.StopTracking();
 

@@ -1,6 +1,5 @@
 ﻿using GpsUtil.Helpers;
 using GpsUtil.Location;
-using GpsUtil.Helpers;
 
 namespace GpsUtil;
 

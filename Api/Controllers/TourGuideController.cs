@@ -24,6 +24,7 @@ public class TourGuideController : ControllerBase
         return Ok(location);
     }
 
+    // FIX Perf optimization ==> async&await / multiple await.
     // (FNCT01) TODO: Change this method to no longer return a List of Attractions.
     // Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
     // Return a new JSON object that contains:
@@ -34,11 +35,11 @@ public class TourGuideController : ControllerBase
     // The reward points for visiting each Attraction.
     //    Note: Attraction reward points can be gathered from RewardsCentral
     [HttpGet("getNearbyAttractions")]
-    public ActionResult<List<Attraction>> GetNearbyAttractions([FromQuery] string userName)
+    public async Task<ActionResult<List<Attraction>>> GetNearbyAttractions([FromQuery] string userName)
     {
-        var visitedLocation = _tourGuideService.GetUserLocation(GetUser(userName));
+        var visitedLocation = await _tourGuideService.GetUserLocation(GetUser(userName));
         // (FNCT01.08) populate GetNearByAttractions updates: add user in entry parameter.        
-        var attractions = _tourGuideService.GetNearByAttractions(GetUser(userName), visitedLocation);
+        var attractions = await _tourGuideService.GetNearByAttractions(GetUser(userName), visitedLocation);
         return Ok(attractions);
     }
 
