@@ -75,6 +75,7 @@ public class RewardsService : IRewardsService
                 }
             }
         }
+        return true;
     }
 
     // FIX03.5  update IsWithinAttractionProximity method for checking distance compared
