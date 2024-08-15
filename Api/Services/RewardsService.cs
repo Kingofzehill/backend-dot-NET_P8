@@ -75,6 +75,20 @@ public class RewardsService : IRewardsService
                 }
             }
         }
+
+    }
+
+    // FIX07.01 checks if the attraction is not 
+    // already listed in User attractions rewards.
+    private static bool AttractionHasNoUserReward(User user, Attraction attraction)
+    {
+        for (int k = 0; k < user.UserRewards.Count; k++)
+        {
+            if (user.UserRewards[k].Attraction.AttractionName == attraction.AttractionName)
+            {
+                return false;
+            }
+        }
         return true;
     }
 

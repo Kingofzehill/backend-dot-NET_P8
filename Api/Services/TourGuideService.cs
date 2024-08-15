@@ -92,28 +92,28 @@ public class TourGuideService : ITourGuideService
         await _rewardsService.CalculateRewards(user);
         return visitedLocation;
     }
-
+    // FIX Perf optimization ==> async&await / multiple await.
     // (FNCT01) update GetNearByAttractions method for : get 5 nearby attractions of the last user location.
     // No matter how far they are.
-    public List<NearbyAttraction> GetNearByAttractions(User user, VisitedLocation visitedLocation)
+    public async Task<List<NearbyAttraction>> GetNearByAttractions(User user, VisitedLocation visitedLocation)
     {
         double distanceFromAttractionInList;
         double attractionReward;
         List<NearbyAttraction> nearbyAttractions = new ();
-        List<Attraction> attractions = _gpsUtil.GetAttractions();
+        List<Attraction> attractions = await _gpsUtil.GetAttractions();
         // (FNCT01.09) set ProxmityBuffer from 10 to int.MaxValue. Required
         // for adding reward to Attractions further than the 10 miles proximityBuffer.
         _rewardsService.SetProximityBuffer(int.MaxValue);
         // (FNCT01.05-2) add CalculateRewards call in GetNearbyAttractions method for being
         // able to add RewardPoints to each NearbyAttraction as requested in the TODO of
         // TourGuideController.GetNearbyAttractions API method.     
-        _rewardsService.CalculateRewards(user);
+        await _rewardsService.CalculateRewards(user);
 
         for (int i = 0; i < attractions.Count; i++)
         {
             // (FNCT01.01) check distance of attraction from user localization 
             distanceFromAttractionInList = _rewardsService.GetDistance(attractions[i], visitedLocation.Location);
-            // (FNCT01.02) add attractions to nearbyAttractions list.          
+            // (FNCT01.02) add attraction to nearbyAttractions list.          
             attractionReward = AttractionReward(user, attractions[i]);
             var nearbyAttraction = new NearbyAttraction(attractionReward, distanceFromAttractionInList, visitedLocation.Location.Longitude,
                 visitedLocation.Location.Latitude, attractions[i].AttractionName, attractions[i].City,

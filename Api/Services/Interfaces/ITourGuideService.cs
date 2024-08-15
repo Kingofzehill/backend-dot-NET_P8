@@ -13,7 +13,7 @@ namespace TourGuide.Services.Interfaces
         List<User> GetAllUsers();
         // (FNCT01.03) populate FNCT01 updates: List<NearbyAttraction> replaces List<Attraction>. 
         // (FNCT01.07) populate GetNearByAttractions updates: add user in entry parameter.
-        List<NearbyAttraction> GetNearByAttractions(User user, VisitedLocation visitedLocation);
+        Task<List<NearbyAttraction>> GetNearByAttractions(User user, VisitedLocation visitedLocation);
         List<Provider> GetTripDeals(User user);
         User GetUser(string userName);
         VisitedLocation GetUserLocation(User user);
