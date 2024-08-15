@@ -20,7 +20,7 @@ public class RewardsService : IRewardsService
     private int _proximityRange;
     private readonly IGpsUtil _gpsUtil;
     private readonly IRewardCentral _rewardsCentral;
-    private static int count = 0;
+    // private static int count = 0;
 
     public RewardsService(IGpsUtil gpsUtil, IRewardCentral rewardCentral)
     {
@@ -51,32 +51,21 @@ public class RewardsService : IRewardsService
     {
         _proximityRange = _defaultAttractionProximityRange;
     }
-
+    // FIX Perf optimization ==> async&await. 
     // TD01 implement new functinality for calculating rewards.
-    public void CalculateRewards(User user)
+    public async Task CalculateRewards(User user)
     {
         //count++;
         List<VisitedLocation> userLocations = user.VisitedLocations;
-        List<Attraction> attractions = _gpsUtil.GetAttractions();
+        List<Attraction> attractions = await _gpsUtil.GetAttractions();
 
         // FIX04.1 Fix for preventing InvalidOperationException error :
         // replace for each loop by for loop and makes subsequent code updates.
         // See : https://makolyte.com/system-invalidoperationexception-collection-was-modified-enumeration-operation-may-not-execute/#Scenario_2_-_One_thread_is_modifying_the_collection_while_another_thread_is_looping_over_it
-        // OLD : foreach (var visitedLocation in userLocations)
         for (int i = 0; i < userLocations.Count; i++)
         {
-            // OLD : foreach (var attraction in attractions)
             for (int j = 0; j < attractions.Count; j++)
             {
-                /* Before FIX04.1
-                if (!user.UserRewards.Any(r => r.Attraction.AttractionName == attraction.AttractionName))
-                {
-                    if (NearAttraction(visitedLocation, attraction))
-                    {
-                        user.AddUserReward(new UserReward(visitedLocation, attraction, GetRewardPoints(attraction, user)));
-                    }
-                }
-                */
                 if (!user.UserRewards.Any(r => r.Attraction.AttractionName == attractions[j].AttractionName))
                 {
                     if (NearAttraction(userLocations[i], attractions[j]))
