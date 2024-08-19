@@ -42,7 +42,7 @@ namespace TourGuideTest
         public async Task HighVolumeTrackLocation()
         {
             //We can rise test users number for testing application performances.
-            _fixture.Initialize(10);
+            _fixture.Initialize(100000);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
@@ -70,22 +70,20 @@ namespace TourGuideTest
         public async Task HighVolumeGetRewards()
         {
             //We can rise test users number for testing application performances.
-            _fixture.Initialize(10);
+            _fixture.Initialize(100000);
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
 
             var attraction = await _fixture.GpsUtil.GetAttractions();
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
-            allUsers.ForEach(u => u.AddToVisitedLocations(new VisitedLocation(u.UserId, attraction[0], DateTime.Now)));
-
-            allUsers.ForEach(u => _fixture.RewardsService.CalculateRewards(u));
+            
+            allUsers.ForEach(u => u.AddToVisitedLocations(new VisitedLocation(u.UserId, attraction[0], DateTime.Now)));            
 
             var tasks = new List<Task>();
             foreach (var user in allUsers)
-            {
-                tasks.Add(_fixture.RewardsService.CalculateRewards(user));
-                //Assert.True(user.UserRewards.Count > 0);
+            {                
+                tasks.Add(_fixture.RewardsService.CalculateRewards(user));                
             }
             await Task.WhenAll(tasks);
             allUsers.ForEach(user => Assert.True(user.UserRewards.Count > 0));
