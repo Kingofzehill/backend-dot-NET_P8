@@ -42,7 +42,7 @@ namespace TourGuideTest
         public async Task HighVolumeTrackLocation()
         {
             //We can rise test users number for testing application performances.
-            _fixture.Initialize(100);
+            _fixture.Initialize(100000);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
@@ -70,7 +70,7 @@ namespace TourGuideTest
         public async Task HighVolumeGetRewards()
         {
             //We can rise test users number for testing application performances.
-            _fixture.Initialize(100);
+            _fixture.Initialize(100000);
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
