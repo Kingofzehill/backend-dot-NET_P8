@@ -6,9 +6,9 @@ name: Build, test and deploy ASP.NET Core TourGuide API App
 # specifies GitHub events that triggers the workflow
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "Dev" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "Dev" ]
 
 jobs:
   build:

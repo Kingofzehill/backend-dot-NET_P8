@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using TourGuide.LibrairiesWrappers.Interfaces;
 using TourGuide.Services.Interfaces;
 using TourGuide.Users;
@@ -49,9 +50,10 @@ public class TourGuideService : ITourGuideService
         return user.UserRewards;
     }
 
-    public VisitedLocation GetUserLocation(User user)
+    // FIX Perf optimization ==> async&await.
+    public async Task<VisitedLocation> GetUserLocation(User user)
     {
-        return user.VisitedLocations.Any() ? user.GetLastVisitedLocation() : TrackUserLocation(user);
+        return user.VisitedLocations.Any() ? user.GetLastVisitedLocation() : await TrackUserLocation(user);
     }
 
     public User GetUser(string userName)
@@ -82,26 +84,66 @@ public class TourGuideService : ITourGuideService
         return providers;
     }
 
-    public VisitedLocation TrackUserLocation(User user)
+    // FIX Perf optimization ==> async&await / mutliple await.
+    public async Task<VisitedLocation> TrackUserLocation(User user)
     {
-        VisitedLocation visitedLocation = _gpsUtil.GetUserLocation(user.UserId);
+        VisitedLocation visitedLocation = await _gpsUtil.GetUserLocation(user.UserId);
         user.AddToVisitedLocations(visitedLocation);
-        _rewardsService.CalculateRewards(user);
+        await _rewardsService.CalculateRewards(user);
         return visitedLocation;
     }
-
-    public List<Attraction> GetNearByAttractions(VisitedLocation visitedLocation)
+    // FIX Perf optimization ==> async&await / multiple await.
+    // (FNCT01) update GetNearByAttractions method for : get 5 nearby attractions of the last user location.
+    // No matter how far they are.
+    public async Task<List<NearbyAttraction>> GetNearByAttractions(User user, VisitedLocation visitedLocation)
     {
-        List<Attraction> nearbyAttractions = new ();
-        foreach (var attraction in _gpsUtil.GetAttractions())
+        double distanceFromAttractionInList;
+        double attractionReward;
+        List<NearbyAttraction> nearbyAttractions = new ();
+        List<Attraction> attractions = await _gpsUtil.GetAttractions();
+        // (FNCT01.09) set ProxmityBuffer from 10 to int.MaxValue. Required
+        // for adding reward to Attractions further than the 10 miles proximityBuffer.
+        _rewardsService.SetProximityBuffer(int.MaxValue);
+        // (FNCT01.05-2) add CalculateRewards call in GetNearbyAttractions method for being
+        // able to add RewardPoints to each NearbyAttraction as requested in the TODO of
+        // TourGuideController.GetNearbyAttractions API method.     
+        await _rewardsService.CalculateRewards(user);
+
+        for (int i = 0; i < attractions.Count; i++)
         {
-            if (_rewardsService.IsWithinAttractionProximity(attraction, visitedLocation.Location))
-            {
-                nearbyAttractions.Add(attraction);
-            }
+            // (FNCT01.01) check distance of attraction from user localization 
+            distanceFromAttractionInList = _rewardsService.GetDistance(attractions[i], visitedLocation.Location);
+            // (FNCT01.02) add attraction to nearbyAttractions list.          
+            attractionReward = AttractionReward(user, attractions[i]);
+            var nearbyAttraction = new NearbyAttraction(attractionReward, distanceFromAttractionInList, visitedLocation.Location.Longitude,
+                visitedLocation.Location.Latitude, attractions[i].AttractionName, attractions[i].City,
+                attractions[i].State, attractions[i].Latitude, attractions[i].Longitude);
+            nearbyAttractions.Add(nearbyAttraction);                                                                          
         }
 
-        return nearbyAttractions;
+        // Sort nearbyAttractions items list by distance descending order.
+        nearbyAttractions.Sort((x, y) => x.Distance.CompareTo(y.Distance));
+        // Keep the first 5 items.
+        List<NearbyAttraction> firstFiveNearbyAttractions = new(nearbyAttractions.Take(5));
+
+        // (FNCT01.09) returns to default ProximityBuffer value.
+        _rewardsService.SetProximityBuffer(10);
+        
+        return firstFiveNearbyAttractions;
+    }
+
+    // (FNCT 01.10) returns RewardPoints of an Attraction.
+    private static double AttractionReward(User user, Attraction attraction)
+    {
+        double attractionReward = 0;
+        for (int k = 0; k < user.UserRewards.Count; k++)
+        {
+            if (user.UserRewards[k].Attraction.AttractionName == attraction.AttractionName)
+            {
+                attractionReward = user.UserRewards[k].RewardPoints;                
+            }
+        }
+        return attractionReward;
     }
 
     private void AddShutDownHook()

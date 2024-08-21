@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TourGuide.Services;
+using TourGuide.Services.Interfaces;
 using TourGuide.Users;
 using TourGuide.Utilities;
 using TripPricer;
@@ -25,12 +26,13 @@ namespace TourGuideTest
             _fixture.Cleanup();
         }
 
+        // FIX Perf optimization ==> async&await. 
         [Fact]
-        public void GetUserLocation()
+        public async Task GetUserLocation()
         {
             _fixture.Initialize(0);
             var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
-            var visitedLocation = _fixture.TourGuideService.TrackUserLocation(user);
+            var visitedLocation = await _fixture.TourGuideService.TrackUserLocation(user);
             _fixture.TourGuideService.Tracker.StopTracking();
 
             Assert.Equal(user.UserId, visitedLocation.UserId);
@@ -73,32 +75,46 @@ namespace TourGuideTest
             Assert.Contains(user2, allUsers);
         }
 
+        // FIX Perf optimization ==> async&await. 
         [Fact]
-        public void TrackUser()
+        public async Task TrackUser()
         {
             _fixture.Initialize();
             var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
-            var visitedLocation = _fixture.TourGuideService.TrackUserLocation(user);
+            var visitedLocation = await _fixture.TourGuideService.TrackUserLocation(user);
 
             _fixture.TourGuideService.Tracker.StopTracking();
 
             Assert.Equal(user.UserId, visitedLocation.UserId);
         }
 
-        [Fact(Skip = "Not yet implemented")]
-        public void GetNearbyAttractions()
+        // FIX Perf optimization ==> async&await / multiple await. 
+        // FIX03 set GetNearbyAttractions test to be played:
+        // [Fact(Skip = "Not yet implemented")] ==> [Fact].
+        [Fact]
+        public async Task GetNearbyAttractions()
         {
             _fixture.Initialize(0);
-            var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
-            var visitedLocation = _fixture.TourGuideService.TrackUserLocation(user);
+            // (FIX03.1 & 3.2) set ProxmityBuffer from 10 to int.MaxValue.
+            // It is required for avoiding the proximityBuffer (10 miles)
+            // to prevent CalculateRewards method to add Reward for each Nearby Attraction
+            //      _fixture.RewardsService.SetProximityBuffer(int.MaxValue);
+            // (FIX03.6) set ProxmityRange from 200 to int.MaxValue.
+            // It increases the detection of proximity attractions.
+            //      _fixture.RewardsService.SetAttractionProximityRange(int.MaxValue);
 
-            List<Attraction> attractions = _fixture.TourGuideService.GetNearByAttractions(visitedLocation);
+            var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
+            var visitedLocation = await _fixture.TourGuideService.TrackUserLocation(user);
+
+            // (FNCT01.04) populate FNCT01 updates: List<NearbyAttraction> replaces List<Attraction>. 
+            List<NearbyAttraction> attractions = await _fixture.TourGuideService.GetNearByAttractions(user, visitedLocation);
 
             _fixture.TourGuideService.Tracker.StopTracking();
 
             Assert.Equal(5, attractions.Count);
         }
 
+        // See FIX01 & FIX02 for code fixes done for validating GetTripDeals unit test.
         [Fact]
         public void GetTripDeals()
         {
