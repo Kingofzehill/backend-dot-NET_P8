@@ -31,14 +31,12 @@ jobs:
     # .NET test driver used to execute unit tests.
     - name: Unit tests
       run: dotnet test --no-build --verbosity normal
-    - run: |
-        mkdir -p ${{ github.workspace }}/publish
     # (add) Publishes App and its dependencies in Publish dir for deployment using release configuraton for hosting system.
     - name: Publish
-      run: dotnet publish --configuration Release --output ./publish
+      run: dotnet publish --configuration Release --property:PublishDir=${{env.DOTNET_ROOT}}/publish
     # (add) Zip file in Publish dir.
     - name: Archive artifacts
       uses: actions/upload-artifact@v4
       with:
         name: TourGuide-${{ github.sha }}
-        path: ${{ github.workspace }}/publish
+        path: ${{env.DOTNET_ROOT}}/publish
