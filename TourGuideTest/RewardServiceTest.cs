@@ -39,7 +39,7 @@ public class RewardServiceTest : IClassFixture<DependencyFixture>
         Assert.True(_fixture.RewardsService.IsWithinAttractionProximity(attraction[0], attraction[0]));
     }
     // FIX Perf optimization ==> async&await / multiple await.
-    // FIX04 set NearAllAttractions test to be played:
+    // FIX04 set NearAllAttractions test to be played.
     // [Fact(Skip = "Needs fixed - can throw InvalidOperationException")] ==> [Fact].
     [Fact]
     public async Task NearAllAttractions()

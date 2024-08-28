@@ -89,7 +89,7 @@ namespace TourGuideTest
         }
 
         // FIX Perf optimization ==> async&await / multiple await. 
-        // FIX03 set GetNearbyAttractions test to be played:
+        // FIX03 set GetNearbyAttractions test to be played.
         // [Fact(Skip = "Not yet implemented")] ==> [Fact].
         [Fact]
         public async Task GetNearbyAttractions()

@@ -36,7 +36,7 @@ namespace TourGuideTest
             _output = output;
         }
         // FIX Perf optimization ==> async&await / new List<Task>() + await Task.WhenAll(tasks).
-        // FIX06 set HighVolumeGetRewards test to be played:
+        // FIX06 set HighVolumeGetRewards test to be played.
         // [Fact(Skip = "Delete Skip when you want to pass the test")] ==> [Fact].
         [Fact]
         public async Task HighVolumeTrackLocation()
@@ -52,8 +52,7 @@ namespace TourGuideTest
             var tasks = new List<Task>();
             foreach (var user in allUsers)
             {
-                tasks.Add(_fixture.TourGuideService.TrackUserLocation(user));
-                //_fixture.TourGuideService.TrackUserLocation(user);
+                tasks.Add(_fixture.TourGuideService.TrackUserLocation(user));                
             }
             await Task.WhenAll(tasks);
             stopWatch.Stop();
@@ -64,7 +63,7 @@ namespace TourGuideTest
             Assert.True(TimeSpan.FromMinutes(15).TotalSeconds >= stopWatch.Elapsed.TotalSeconds);
         }
         // FIX Perf optimization ==> async&await / multiple await / new List<Task>() + await Task.WhenAll(tasks).
-        // FIX05 set HighVolumeGetRewards test to be played:
+        // FIX05 set HighVolumeGetRewards test to be played.
         // [Fact(Skip = "Delete Skip when you want to pass the test")] ==> [Fact].
         [Fact]
         public async Task HighVolumeGetRewards()

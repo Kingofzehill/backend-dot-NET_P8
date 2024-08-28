@@ -6,8 +6,7 @@ namespace GpsUtil;
 public class GpsUtil
 {
     private static readonly SemaphoreSlim rateLimiter = new(1000, 1000);
-
-    // FIX Perf optimization ==> async&await / task.run.
+    
     public async Task<VisitedLocation> GetUserLocation(Guid userId)
     {
         rateLimiter.Wait();
@@ -33,8 +32,7 @@ public class GpsUtil
             rateLimiter.Release();
         }
     }
-
-    // FIX Perf optimization ==> async&await / Task.run.
+    
     public async Task<List<Attraction>> GetAttractions()
     {
         rateLimiter.Wait();

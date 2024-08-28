@@ -78,7 +78,7 @@ public class RewardsService : IRewardsService
 
     }
 
-    // FIX07.01 checks if the attraction is not 
+    // FIX07 checks if the attraction is not 
     // already listed in User attractions rewards.
     private static bool AttractionHasNoUserReward(User user, Attraction attraction)
     {
