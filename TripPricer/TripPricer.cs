@@ -14,6 +14,7 @@ public class TripPricer
         // FIX01 GetTripDeals unit test ==> validation
         // We extend the For loop high limit to 10 (5 previously).
         // It allows to load all suppliers (10, see GetProviderName).          
+
         for (int i = 0; i < 10; i++)
         {
             int multiple = ThreadLocalRandom.Current.Next(100, 700);
@@ -42,6 +43,7 @@ public class TripPricer
         // FIX02 for GetTripDeals unit test validation ==>
         // Next is exclusive, it returns minvalue to maxvalue-1,
         // so 10 is never returned. We set the maxvalue to 11. 
+
         int multiple = ThreadLocalRandom.Current.Next(1, 11);
 
         return multiple switch

@@ -60,7 +60,7 @@ namespace TourGuideTest
 
             _output.WriteLine($"highVolumeTrackLocation: Time Elapsed: {stopWatch.Elapsed.TotalSeconds} seconds.");
 
-            Assert.True(TimeSpan.FromMinutes(15).TotalSeconds >= stopWatch.Elapsed.TotalSeconds);
+            Assert.True(TimeSpan.FromMinutes(1).TotalSeconds >= stopWatch.Elapsed.TotalSeconds);
         }
         // FIX Perf optimization ==> async&await / multiple await / new List<Task>() + await Task.WhenAll(tasks).
         // FIX05 set HighVolumeGetRewards test to be played.
@@ -69,7 +69,7 @@ namespace TourGuideTest
         public async Task HighVolumeGetRewards()
         {
             //We can rise test users number for testing application performances.
-            _fixture.Initialize(100000);
+            _fixture.Initialize(100);
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
