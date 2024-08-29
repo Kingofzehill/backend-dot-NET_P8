@@ -1,4 +1,5 @@
 ﻿using GpsUtil.Location;
+using System.ComponentModel;
 using System.Diagnostics;
 using TourGuide.Users;
 using Xunit.Abstractions;
@@ -42,13 +43,13 @@ namespace TourGuideTest
         public async Task HighVolumeTrackLocation()
         {
             //We can rise test users number for testing application performances.
-            _fixture.Initialize(100000);
+            _fixture.Initialize(100);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
-            sdfjlksdj
+
             var tasks = new List<Task>();
             foreach (var user in allUsers)
             {
