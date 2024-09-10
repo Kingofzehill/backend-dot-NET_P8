@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using TourGuide.Users;
 using Xunit.Abstractions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TourGuideTest
 {
@@ -49,7 +50,7 @@ namespace TourGuideTest
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
-
+            « add syntax error ». 
             var tasks = new List<Task>();
             foreach (var user in allUsers)
             {
