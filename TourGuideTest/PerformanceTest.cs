@@ -50,7 +50,7 @@ namespace TourGuideTest
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
-            « add syntax error ». 
+            
             var tasks = new List<Task>();
             foreach (var user in allUsers)
             {
